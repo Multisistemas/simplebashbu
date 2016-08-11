@@ -27,9 +27,9 @@
 # Which day of the week do we want to do full backups? 0=Sunday
   LEVEL0DAY=0
 # Where to create the backups; It should already exist
-  BACKUP_DIR=/mnt/backups/fwatl01
+  BACKUP_DIR=/backup
 # Filesystems to backup seperated by spaces and the entire string in double quotes; each must start with /
-  FILESYSTEMS="/root /etc /var/lib/rpm /home /var/named"
+  FILESYSTEMS="/root /etc /home"
 # Should we email results? Also should we email critical errors?  0=false, 1=true 
   EMAIL=1
 # EMAIL address to send results to
@@ -61,17 +61,17 @@
 # Day of the week;
   DAYOFWEEK=`date +"%w"`
 # Folder for all daily backups
-  DAILYBACKUPDIR=$BACKUP_DIR/DAILY
+  DAILYBACKUPDIR=$BACKUP_DIR/$HOSTNAME/DAILY
 # Name of directory to create for current backup  
   TODAYSBACKUPDIR=$DAILYBACKUPDIR/$DAYOFWEEK
 # directory to store last weeks data
-  ARCHIVEDDATADIR=$BACKUP_DIR/ARCHIVED_BACKUPS
+  ARCHIVEDDATADIR=$BACKUP_DIR/$HOSTNAME/ARCHIVED_BACKUPS
 # Location of a file to hold the date stamp of last level 0 backup
-  L0DATESTAMP=$BACKUP_DIR/.level0_datestamp
+  L0DATESTAMP=$BACKUP_DIR/$HOSTNAME/.level0_datestamp
 # Do I really need to explain this one ;-)
   NOW=`date`
 # Log dir
-  LOGDIR=$BACKUP_DIR/LOGS
+  LOGDIR=$BACKUP_DIR/$HOSTNAME/LOGS
 # Svript name
   SCRIPTNAME="Simple Bash Backup Script"
 # Version
@@ -99,6 +99,13 @@ if [ ! -d $BACKUP_DIR ]
     echo "The specified backup directory $BACKUP_DIR does not exist. Operation canceled."
     exit 1
 fi
+
+# Does hostname dir exist? If not, create it.
+if [ ! -d $BACKUP_DIR/$HOSTNAME ]
+  then
+    mkdir $BACKUP_DIR/$HOSTNAME
+fi
+
 # Does the daily backup dir exist? If not, create it.
 if [ ! -d $DAILYBACKUPDIR ]
   then
