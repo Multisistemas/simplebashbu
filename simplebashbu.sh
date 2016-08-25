@@ -11,13 +11,6 @@
 # to easily backup thier system, provided they have an extra 
 # hard drive.
 #
-
-
-
-
-
-
-
 ###############################################
 #              User Variables                 #
 ###############################################
@@ -29,7 +22,7 @@
 # Where to create the backups; It should already exist
   BACKUP_DIR=/backup
 # Filesystems to backup seperated by spaces and the entire string in double quotes; each must start with /
-  FILESYSTEMS="/root /etc /home"
+  FILESYSTEMS="/root /etc /home /var/www"
 # Should we email results? Also should we email critical errors?  0=false, 1=true 
   EMAIL=1
 # EMAIL address to send results to
@@ -60,18 +53,20 @@
 ###############################################
 # Day of the week;
   DAYOFWEEK=`date +"%w"`
+# Base of files backup hor a host
+  BACKUPBASE=$BACKUP_DIR/$HOSTNAME/FILES
 # Folder for all daily backups
-  DAILYBACKUPDIR=$BACKUP_DIR/$HOSTNAME/DAILY
+  DAILYBACKUPDIR=$BACKUPBASE/DAILY
 # Name of directory to create for current backup  
-  TODAYSBACKUPDIR=$DAILYBACKUPDIR/$DAYOFWEEK
+  TODAYSBACKUPDIR=$BACKUPBASE/$DAYOFWEEK
 # directory to store last weeks data
-  ARCHIVEDDATADIR=$BACKUP_DIR/$HOSTNAME/ARCHIVED_BACKUPS
+  ARCHIVEDDATADIR=$BACKUPBASE/ARCHIVED_BACKUPS
 # Location of a file to hold the date stamp of last level 0 backup
-  L0DATESTAMP=$BACKUP_DIR/$HOSTNAME/.level0_datestamp
+  L0DATESTAMP=$BACKUPBASE/.level0_datestamp
 # Do I really need to explain this one ;-)
   NOW=`date`
 # Log dir
-  LOGDIR=$BACKUP_DIR/$HOSTNAME/LOGS
+  LOGDIR=$BACKUPBASE/LOGS
 # Svript name
   SCRIPTNAME="Simple Bash Backup Script"
 # Version
@@ -103,19 +98,25 @@ fi
 # Does hostname dir exist? If not, create it.
 if [ ! -d $BACKUP_DIR/$HOSTNAME ]
   then
-    mkdir $BACKUP_DIR/$HOSTNAME
+    mkdir -p $BACKUP_DIR/$HOSTNAME
+fi
+
+# Does base dir exist? If not, create it.
+if [ ! -d $BACKUPBASE ]
+  then
+    mkdir -p $BACKUPBASE
 fi
 
 # Does the daily backup dir exist? If not, create it.
 if [ ! -d $DAILYBACKUPDIR ]
   then
-    mkdir $DAILYBACKUPDIR
+    mkdir -p $DAILYBACKUPDIR
 fi
  
 # Does the daily backup dir exist? If not, create it.
 if [ ! -d $LOGDIR ]
   then
-    mkdir $LOGDIR
+    mkdir -p $LOGDIR
 fi
 
 
